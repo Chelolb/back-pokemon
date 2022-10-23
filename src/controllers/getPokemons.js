@@ -30,51 +30,73 @@ const getAllPokemons = async (req, res, next) => {// obtiene todos los pokemons
 const getPokemonById = async (req, res, next) => {  // obtiene pokemon por ID
 
     let { id } = req.params;
-
-    if (                      //Las Recetas en BD tiene ID en formato UUIDV4??...
-    id.match(
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i
-    )
-    ) 
     
-    { // ID tiene formato UUID, busca en bd
+    if (!id || id.match(/[$%&/()=+@=,.?¿'¡!"]/)) {
+    //if (!id) {
 
-        let apiResult = await getPokemonDbById(id) 
+        return res.status(200).send(
+            {msg:`No se indicó el parámetro id, o se incluyeron caracteres inválidos`}
+            );
 
-        res.status(200).send(apiResult);
-    }
-
+    } 
     else
+    {
+            
+        if (                      //Las Recetas en BD tiene ID en formato UUIDV4??...
+        id.match(
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+        )
+        ) 
+        
+        { // ID tiene formato UUID, busca en bd
 
-    { // sino, busca en la API
+            let apiResult = await getPokemonDbById(id) 
 
-        let apiResult = await getPokemonApiById(id) 
+            res.status(200).send(apiResult);
+        }
 
-        res.status(200).send(apiResult);
-    
+        else
+
+        { // sino, busca en la API
+
+            let apiResult = await getPokemonApiById(id) 
+
+            res.status(200).send(apiResult);
+        
+        }
     }
-
 
 }
 
 const getPokemonByName = async (req, res, next) => {  // obtiene pokemon por Nombre
 
     let { name } = req.params;
-
-    let apiResult = await getPokemonApiByName(name) 
-
-    if(!apiResult.msg) {    // si encuentra en API, lo muestra
-         return res.status(200).send(apiResult);
-    }
     
-    apiResult = await getPokemonDbByName(name)
+    if (!name || name.match(/[$%&/() =+-@=,.?¿'¡!"]/)) {
 
-    if(apiResult.length !== 0) {    // si encuentra en DB, lo muestra
-        return res.status(200).send(apiResult);
+        return res.status(200).send(
+            {msg:`No se indicó el parámetro name, o se incluyeron caracteres inválidos`}
+            );
+
+    } 
+    else
+    {
+
+        let apiResult = await getPokemonApiByName(name) 
+
+        if(!apiResult.msg) {    // si encuentra en API, lo muestra
+            return res.status(200).send(apiResult);
+        }
+        
+        apiResult = await getPokemonDbByName(name)
+
+        if(apiResult.length !== 0) {    // si encuentra en DB, lo muestra
+            return res.status(200).send(apiResult);
+        }
+
+        return res.status(200).send({msg:`No se encontró el Pokemon: ${name}`});
+
     }
-
-    return res.status(200).send({msg:`No se encontró el Pokemon: ${name}`});
-    
 }
 
 module.exports = { 

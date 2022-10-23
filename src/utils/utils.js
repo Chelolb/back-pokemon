@@ -276,7 +276,7 @@ async function getPokemonDbByName(nameSearch){
           return dbFormated;
 
     } catch(error){
-        return error;
+        return ({msg:`No se encontró el Pokemon: ${nameSearch}`});
     }
 }
 
