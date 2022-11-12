@@ -29,7 +29,7 @@ async function getPokemonsApi() {
                 return {                             // solo los datos creados
                       id: p.data.id,
                       name: p.data.name,
-                      image: p.data.sprites.other.dream_world.front_default,  // url imagen
+                      image: p.data.sprites.other.['official-artwork'].front_default,  // url imagen
                       hp: p.data.stats[0].base_stat,
                       attack: p.data.stats[1].base_stat,
                       defense: p.data.stats[2].base_stat,
@@ -149,7 +149,7 @@ async function getPokemonApiById(idSearch) {    // busca por ID en API
             return {
                 id: p.data.id,
                 name: p.data.name,
-                image: p.data.sprites.other.dream_world.front_default,  // url imagen
+                image: p.data.sprites.other.['official-artwork'].front_default,  // url imagen
                 hp: p.data.stats[0].base_stat,
                 attack: p.data.stats[1].base_stat,
                 defense: p.data.stats[2].base_stat,
@@ -221,7 +221,7 @@ async function getPokemonApiByName(nameSearch) {    // busca por nombre en API
             return {
                 id: p.data.id,
                 name: p.data.name,
-                image: p.data.sprites.other.dream_world.front_default,  // url imagen
+                image: p.data.sprites.other.['official-artwork'].front_default,  // url imagen
                 hp: p.data.stats[0].base_stat,
                 attack: p.data.stats[1].base_stat,
                 defense: p.data.stats[2].base_stat,
