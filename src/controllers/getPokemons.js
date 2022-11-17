@@ -31,7 +31,7 @@ const getPokemonById = async (req, res, next) => {  // obtiene pokemon por ID
 
     let { id } = req.params;
     
-    if (!id || id.match(/[$%&/()=+@=,.?¿'¡!"]/)) {
+    if (!id || id.match(/[$%&/()=+@ ,.?¿'¡!"]/)) {
     //if (!id) {
 
         return res.status(200).send(
@@ -72,7 +72,7 @@ const getPokemonByName = async (req, res, next) => {  // obtiene pokemon por Nom
 
     let { name } = req.params;
     
-    if (!name || name.match(/[$%&/() =+-@=,.?¿'¡!"]/)) {
+    if (!name || name.match(/[$%&/() =+-@,.?¿'¡!"]/)) {
 
         return res.status(200).send(
             {msg:`No se indicó el parámetro name, o se incluyeron caracteres inválidos`}
@@ -85,13 +85,15 @@ const getPokemonByName = async (req, res, next) => {  // obtiene pokemon por Nom
         let apiResult = await getPokemonApiByName(name) 
 
         if(!apiResult.msg) {    // si encuentra en API, lo muestra
-            return res.status(200).send(apiResult);
+            let arrResult = []
+            arrResult.push(apiResult)
+            return res.status(200).send(arrResult);
         }
         
-        apiResult = await getPokemonDbByName(name)
+        arrResult = await getPokemonDbByName(name)
 
-        if(apiResult.length !== 0) {    // si encuentra en DB, lo muestra
-            return res.status(200).send(apiResult);
+        if(arrResult.length !== 0) {    // si encuentra en DB, lo muestra
+            return res.status(200).send(arrResult);
         }
 
         return res.status(200).send({msg:`No se encontró el Pokemon: ${name}`});
