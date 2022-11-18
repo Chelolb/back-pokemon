@@ -8,17 +8,17 @@ const { getAllPokemon, getPokemonApiById, getPokemonApiByName,
         getPokemonDbByName, getPokemonDbById } = require('../utils/utils');
 
 
-const getAllPokemons = async (req, res, next) => {// obtiene todos los pokemons
+const getAllPokemons = async (req, res, next) => {// search all Pokemons
 
     let apiResult = await getAllPokemon() 
 
     let typeGroup = [];
-    apiResult?.map(p => {   // crea el grupo distintos tipos
+    apiResult?.map(p => {   // create the Type groupe
             typeGroup.push(p.types)
     })
-    let Types =[...new Set(typeGroup.flat())] //  Elimina duplicados
+    let Types =[...new Set(typeGroup.flat())] //  Erase duplicate
         
-    // Agrega Tipos aun no registrados en la tabla
+    // Create Types not found in in table
     Types.map(async (e) => {
         await Type.findOrCreate({ where: { name: e } });
     })
@@ -27,28 +27,27 @@ const getAllPokemons = async (req, res, next) => {// obtiene todos los pokemons
 
 };
 
-const getPokemonById = async (req, res, next) => {  // obtiene pokemon por ID
+const getPokemonById = async (req, res, next) => {  // search pokemon for ID
 
     let { id } = req.params;
     
     if (!id || id.match(/[$%&/()=+@ ,.?¿'¡!"]/)) {
-    //if (!id) {
 
         return res.status(200).send(
-            {msg:`No se indicó el parámetro id, o se incluyeron caracteres inválidos`}
+            {msg:`Not send ID params or includes invalid characters`}
             );
 
     } 
     else
     {
             
-        if (                      //Las Recetas en BD tiene ID en formato UUIDV4??...
+        if (                      //The Pokemon have UUIDV4 format??...
         id.match(
         /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i
         )
         ) 
         
-        { // ID tiene formato UUID, busca en bd
+        { // ID have UUID format, search in bd
 
             let apiResult = await getPokemonDbById(id) 
 
@@ -57,7 +56,7 @@ const getPokemonById = async (req, res, next) => {  // obtiene pokemon por ID
 
         else
 
-        { // sino, busca en la API
+        { // else, search in API
 
             let apiResult = await getPokemonApiById(id) 
 
@@ -68,14 +67,14 @@ const getPokemonById = async (req, res, next) => {  // obtiene pokemon por ID
 
 }
 
-const getPokemonByName = async (req, res, next) => {  // obtiene pokemon por Nombre
+const getPokemonByName = async (req, res, next) => {  // search pokemon for Name
 
     let { name } = req.params;
     
     if (!name || name.match(/[$%&/() =+-@,.?¿'¡!"]/)) {
 
         return res.status(200).send(
-            {msg:`No se indicó el parámetro name, o se incluyeron caracteres inválidos`}
+            {msg:`Not send NAME params o includes invalid characters`}
             );
 
     } 
@@ -84,7 +83,7 @@ const getPokemonByName = async (req, res, next) => {  // obtiene pokemon por Nom
 
         let apiResult = await getPokemonApiByName(name) 
 
-        if(!apiResult.msg) {    // si encuentra en API, lo muestra
+        if(!apiResult.msg) {    // if found in API, show
             let arrResult = []
             arrResult.push(apiResult)
             return res.status(200).send(arrResult);
@@ -92,11 +91,11 @@ const getPokemonByName = async (req, res, next) => {  // obtiene pokemon por Nom
         
         arrResult = await getPokemonDbByName(name)
 
-        if(arrResult.length !== 0) {    // si encuentra en DB, lo muestra
+        if(arrResult.length !== 0) {    // if found in DB, show
             return res.status(200).send(arrResult);
         }
 
-        return res.status(200).send({msg:`No se encontró el Pokemon: ${name}`});
+        return res.status(200).send({msg:`Not found Pokemon: ${name}`});
 
     }
 }

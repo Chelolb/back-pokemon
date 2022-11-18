@@ -4,11 +4,11 @@ const { Pokemon, Type } = require('../db');
 const Op = Sequelize.Op;
 
 
-const createPokemon = async (req, res, next) => {   // crea nuevo Pokemon
+const createPokemon = async (req, res, next) => {   // create new Pokemon
 
     let { name, image, hp, attack, defense, speed, height, weight, types } = req.body;
 
-    let msgErrors = null    // validación de los datos enviados
+    let msgErrors = null    // Validation data send
 
     if (!name || name.match(/[$%&/() =+-@=,.?¿'¡!"]/)) msgErrors = 'name no es válido';
     else if (!image)  msgErrors = 'No se indicó image';
@@ -20,14 +20,14 @@ const createPokemon = async (req, res, next) => {   // crea nuevo Pokemon
     else if (weight < 1 || weight > 100 || isNaN(weight)) msgErrors = 'weight no tiene el valor esperado';
     else if (!Array.isArray(types) || types.length < 1) msgErrors = 'Types no es un array o está vacío';
 
-    if (msgErrors) {        // si hay error, no guarda envía msg
+    if (msgErrors) {        // if error, not save and send msg
         return res.status(200).send(
-            {msg:`${msgErrors}, No se guardó el pokemon`}
+            {msg:`${msgErrors}, Data error, not save pokemon`}
             );
     }
     
 
-    try{                                                // guarda pokemon en DB
+    try{                                                // save pokemon in DB
         let nPokemon = await Pokemon.create({ 
             name, 
             image, 
@@ -39,17 +39,17 @@ const createPokemon = async (req, res, next) => {   // crea nuevo Pokemon
             weight,
         })
 
-        let formated = types;   // chequea Tipos
+        let formated = types;   // check Types
 
-        const matchingTypes = await Type.findAll({  // identifica los tipos
-            where: {                                // de la tabla Tipos
+        const matchingTypes = await Type.findAll({  // search the types
+            where: {                                // in the Types table
                 name: {
                     [Op.in] : formated
                 }
             }
         })
 
-        await nPokemon.setTypes(matchingTypes)   // los asocia al pokemon
+        await nPokemon.setTypes(matchingTypes)   // join to pokemon
 
         return res.status(201).json(nPokemon)
 

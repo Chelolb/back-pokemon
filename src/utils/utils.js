@@ -9,27 +9,27 @@ async function getPokemonsApi() {
     let arrayPokemonsApi = [];
 
       // carga de pokeAPI -----------------------------------------
-      await axios.get('https://pokeapi.co/api/v2/pokemon?offset=0&limit=40')// solicita 40 pokemon (de 0 a 40)
+      await axios.get('https://pokeapi.co/api/v2/pokemon?offset=0&limit=40')// asks 40 pokemon (de 0 a 40)
       .then(async (response) => {
-          let arrayResultApi = response.data.results;   // array de Ob{ name, url}
+          let arrayResultApi = response.data.results;   // array de Objets{ name, url}
           var arrayPromises = [];
-          arrayResultApi.map((p) => arrayPromises.push(axios.get(p.url))); // solicita detalles de 40 pokemon
-          // se obtiene uno por uno los datos de cada pokemon               (los pushea en el array)
+          arrayResultApi.map((p) => arrayPromises.push(axios.get(p.url))); // asks detail of 40 pokemon
+          // the data of the pokemons is obtained one by one               (push in the array)
         
-          await Promise.all(arrayPromises) // espera que se cumplan las promesas
-          .then((pokemons) => {     // obtiene array con todos los detalles
-              arrayPokemonsApi = pokemons.map((p) => { // mapea a cada elemento para extraer 
+          await Promise.all(arrayPromises) // wait for end the promise
+          .then((pokemons) => {     // obtained array with detail pokemoms
+              arrayPokemonsApi = pokemons.map((p) => { // map for each elements for extrac 
                 
-                let typeGroup = [];  // Buscamos los tipos
+                let typeGroup = [];  // search the types
                     p.data.types?.map(t => {    
                         let typ = t.type.name
-                        typeGroup.push(typ) // y armo el array con los tipos
+                        typeGroup.push(typ) // and created types array
                     })
 
-                return {                             // solo los datos creados
+                return {                             // only the desired data 
                       id: p.data.id,
                       name: p.data.name,
-                      image: p.data.sprites.other["official-artwork"].front_default,  // url imagen
+                      image: p.data.sprites.other['official-artwork'].front_default,  // url image
                       hp: p.data.stats[0].base_stat,
                       attack: p.data.stats[1].base_stat,
                       defense: p.data.stats[2].base_stat,
@@ -41,20 +41,20 @@ async function getPokemonsApi() {
                   };  // return 
               }); // map
           }) 
-          .catch((error) => {   // catch error de la 2º promesa
+          .catch((error) => {   // catch error of 2º promesa
               return error;
           });
 
       })
-      .catch((error) => {   // catch error de la 1º promesa
+      .catch((error) => {   // catch error of 1º promesa
           return error;
       });
-        // ------------------------------- end - carga de poke API
+        // ------------------- end - carga de poke API
     return arrayPokemonsApi;
 };
 
 
-async function getPokemonsDb()  {  // busca los pokemon en BD 
+async function getPokemonsDb()  {  // search the pokemon en BD 
 
     try{
         let resolveDB = await Pokemon.findAll({attributes: [ 
@@ -81,13 +81,13 @@ async function getPokemonsDb()  {  // busca los pokemon en BD
   
         if (resolveDB.length){
   
-            resolveDB?.map((e) => {  //Barre cada pokemon en DB 
+            resolveDB?.map((e) => {  //map each pokemon in DB 
                 
-                let types = e["types"];// Buscamos los tipos
+                let types = e["types"];// shearch the types
                 let formated = [];
-                types.map((e) => formated.push(e["name"]));   // creo el array tipos
+                types.map((e) => formated.push(e["name"]));   // create the types array
         
-                let obj = {  // crea el objeto pokemon
+                let obj = {  // create the object pokemon
                     id: e.id,
                     name: e.name,
                     image: e.image,
@@ -112,19 +112,19 @@ async function getPokemonsDb()  {  // busca los pokemon en BD
     } catch(error){
         return error;
     }
-    // ------------------------------- end - carga de poke DB
+    // ------------- end - pokemon charge in DB
 }
 
 
-async function getAllPokemon() {    // busca Todos los pokemon
+async function getAllPokemon() {    // search all pokemon
     try {
         let apiPokemons = await getPokemonsApi();
         let dbPokemons = await getPokemonsDb();
 
-        if(dbPokemons.length === 0)  {   // Si no hay en DB...
-            return apiPokemons }    // solo envia los de API
+        if(dbPokemons.length === 0)  {   // if have not in DB...
+            return apiPokemons }    // only send in API
 
-        return apiPokemons.concat(dbPokemons);  // envia API y DB
+        return apiPokemons.concat(dbPokemons);  // sen in API and DB
 
     } catch (error) {
         return error;
@@ -132,7 +132,7 @@ async function getAllPokemon() {    // busca Todos los pokemon
 };
 
 
-async function getPokemonApiById(idSearch) {    // busca por ID en API
+async function getPokemonApiById(idSearch) {    // search for ID in API
     try{
         const searchPokemonsApi = await axios.get(`https://pokeapi.co/api/v2/pokemon/${idSearch}`);
 
@@ -141,15 +141,15 @@ async function getPokemonApiById(idSearch) {    // busca por ID en API
             let p = searchPokemonsApi;
 
             let typeGroup = [];
-            p.data.types.map((t) => { // Buscamos los tipos
+            p.data.types.map((t) => { // shearch the types
                 let typ = t.type.name
-                typeGroup.push(typ) // y armo el array con los tipos
+                typeGroup.push(typ) // and create the types array
             })
 
             return {
                 id: p.data.id,
                 name: p.data.name,
-                image: p.data.sprites.other["official-artwork"].front_default,  // url imagen
+                image: p.data.sprites.other['official-artwork'].front_default,  // url image
                 hp: p.data.stats[0].base_stat,
                 attack: p.data.stats[1].base_stat,
                 defense: p.data.stats[2].base_stat,
@@ -179,7 +179,7 @@ async function getPokemonDbById(idSearch) {
         });
 
         if (dbResult === null)
-            return res.json({ msg: "Error buscando por id in DB" });
+            return res.json({ msg: "Error search for ID in DB" });
   
         let formated = [];
         dbResult.types.map((e) => formated.push(e["name"]));
@@ -204,7 +204,7 @@ async function getPokemonDbById(idSearch) {
     }
 }
 
-async function getPokemonApiByName(nameSearch) {    // busca por nombre en API
+async function getPokemonApiByName(nameSearch) {    // busca for Name in API
     try{
         const searchPokemonsApi = await axios.get(`https://pokeapi.co/api/v2/pokemon/${nameSearch}`);        
 
@@ -213,7 +213,7 @@ async function getPokemonApiByName(nameSearch) {    // busca por nombre en API
             let p = searchPokemonsApi;
 
             let typeGroup = [];
-            p.data.types.map((t) => { // Buscamos los tipos
+            p.data.types.map((t) => { // Search the types
                 let typ = t.type.name
                 typeGroup.push(typ) // y armo el array con los tipos
             })
@@ -221,7 +221,8 @@ async function getPokemonApiByName(nameSearch) {    // busca por nombre en API
             return {
                 id: p.data.id,
                 name: p.data.name,
-                image: p.data.sprites.other["official-artwork"].front_default,  // url imagen
+                image: p.data.sprites.other['official-artwork'].front_default,  // url imagen
+                //image: p.data.sprites.versions["generation-v"]["black-white"].animated.back_default, // url imagen
                 hp: p.data.stats[0].base_stat,
                 attack: p.data.stats[1].base_stat,
                 defense: p.data.stats[2].base_stat,
@@ -254,9 +255,9 @@ async function getPokemonDbByName(nameSearch){
           let dbFormated = [];
       
           dbResult.map((e) => {
-            let types = e["types"];     // Buscamos los tipos
+            let types = e["types"];     // Search all the types
             let formated = [];
-            types.map((d) => formated.push(d["name"]));  // y armo el array con los tipos
+            types.map((d) => formated.push(d["name"]));  // and create the types array
 
             let obj = {
                 id: e["id"],
@@ -276,7 +277,7 @@ async function getPokemonDbByName(nameSearch){
           return dbFormated;
 
     } catch(error){
-        return ({msg:`No se encontró el Pokemon: ${nameSearch}`});
+        return ({msg:`Not found Pokemon: ${nameSearch}`});
     }
 }
 
