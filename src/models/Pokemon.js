@@ -42,7 +42,7 @@ module.exports = (sequelize) => {
       type: DataTypes.DECIMAL,
       allowNull: false,
     },
-    createdDB:{
+    createdDb:{
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: true,

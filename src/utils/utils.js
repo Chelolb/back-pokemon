@@ -36,7 +36,7 @@ async function getPokemonsApi() {
                       speed: p.data.stats[3].base_stat,
                       height: p.data.height,
                       weight: p.data.weight,
-                      createdDB: false,
+                      createdDb: false,
                       types: typeGroup
                   };  // return 
               }); // map
@@ -67,7 +67,7 @@ async function getPokemonsDb()  {  // search the pokemon en BD
         'speed', 
         'height', 
         'weight', 
-        'createdDB' ],
+        'createdDb' ],
             include:{
                 model: Type,
                 attributes: ["name"],
@@ -97,7 +97,7 @@ async function getPokemonsDb()  {  // search the pokemon en BD
                     speed: e.speed,
                     height: e.height,
                     weight: e.weight,
-                    createdDB: e.createdDB,
+                    createdDb: e.createdDb,
                     types: formated,       
                 }
 
@@ -156,7 +156,7 @@ async function getPokemonApiById(idSearch) {    // search for ID in API
                 speed: p.data.stats[3].base_stat,
                 height: p.data.height,
                 weight: p.data.weight,
-                createdDB: false,
+                createdDb: false,
                 types: typeGroup,
             };  // return
 
@@ -194,6 +194,7 @@ async function getPokemonDbById(idSearch) {
             speed: dbResult["speed"],
             height: dbResult["height"],
             weight: dbResult["weight"],
+            createdDb: dbResult["createdDb"],
             types: formated,
         };
   
@@ -229,7 +230,7 @@ async function getPokemonApiByName(nameSearch) {    // busca for Name in API
                 speed: p.data.stats[3].base_stat,
                 height: p.data.height,
                 weight: p.data.weight,
-                createdDB: false,
+                createdDb: false,
                 types: typeGroup,
             };  // return
 
@@ -269,6 +270,7 @@ async function getPokemonDbByName(nameSearch){
                 speed: e["speed"],
                 height: e["height"],
                 weight: e["weight"],
+                createdDb: e["createdDb"],
                 types: formated,
             };
             dbFormated.push(obj);
