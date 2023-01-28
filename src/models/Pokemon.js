@@ -35,11 +35,11 @@ module.exports = (sequelize) => {
       allowNull: false,
     },
     height:{
-      type: DataTypes.DECIMAL,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     weight:{
-      type: DataTypes.DECIMAL,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     createdDb:{
