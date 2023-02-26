@@ -7,7 +7,7 @@ const Op = Sequelize.Op;
 const createPokemon = async (req, res, next) => {   // create new Pokemon
 
     let { name, image, hp, attack, defense, speed, height, weight, types } = req.body;
-
+    
     let msgErrors = null    // Validation data send
 
     if (!name || name.match(/[$%&/() =+-@=,.?¿'¡!"]/)) msgErrors = 'name no es válido';

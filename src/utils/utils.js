@@ -245,13 +245,16 @@ async function getPokemonApiByName(nameSearch) {    // busca for Name in API
 
 
 async function getPokemonDbByName(nameSearch){ 
+    console.log(nameSearch)
     try{
         let dbResult = await Pokemon.findAll({
-            where: { name: { [Op.like]: `%${nameSearch}%` } },
+            where: { name: { [Op.iLike]: `%${nameSearch}%` } },
             include: [
               { model: Type, attributes: ["name"], through: { attributes: [] } },
             ],
           });
+
+          console.log(JSON.stringify(dbResult));
 
           let dbFormated = [];
       
